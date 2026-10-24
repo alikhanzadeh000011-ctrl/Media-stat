@@ -7,8 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unzip project
-        run: unzip -o Media-project.zip
+        with:
+          fetch-depth: 0
+      - name: Unzip newest project zip
+        run: |
+          f=$(git log --diff-filter=AM --name-only --format= -- '*.zip' | head -1)
+          echo "Using: $f"
+          unzip -o "$f"
+          grep versionName app/build.gradle
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
